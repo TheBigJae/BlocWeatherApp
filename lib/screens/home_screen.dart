@@ -3,25 +3,45 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:untitled1/bloc/weather_bloc_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Widget getWeatherIcon(int code) {
+    switch (code) {
+      case > 200 && <= 300:
+        return Image.asset('assets/images/Thunderstorm-PNG-HD.png');
+         case >=300 && <= 400:
+        return Image.asset('assets/images/lightrain.png');
+         case >=500 && <= 600:
+        return Image.asset('assets/images/rain.png');
+        case >=600 && <= 700:
+        return Image.asset('assets/images/R.png');
+        case >=700 && <= 800:
+        return Image.asset('assets/images/fog.png');
+        case ==800:
+        return Image.asset('assets/images/sun.png');
+        case >800 && <= 804:
+        return Image.asset('assets/images/cloudy.png');
+      default:
+        return Image.asset('assets/images/R (2).png'); 
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.black,
-      //   elevation: 0,
-      //   systemOverlayStyle: SystemUiOverlayStyle(
-      //     statusBarBrightness: Brightness.dark
-      //   ),
-      // ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+        padding: EdgeInsets.fromLTRB(40,40, 40, 20),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Stack(
@@ -70,7 +90,7 @@ class HomePage extends StatelessWidget {
                         children: [
                           Text(
                             '📍 ${state.weather.areaName}',
-                            style:const TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300),
                           ),
@@ -82,11 +102,12 @@ class HomePage extends StatelessWidget {
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold),
                           ),
-                            SizedBox(
-                            height: 5,
-                          ), //Added this meself
-                          Image.asset('assets/images/R.png'),
-                           Center(
+                          // SizedBox(
+                          //   height: 5,
+                          // ), //Added this meself
+                          // Image.asset('assets/images/R.png'),
+                          getWeatherIcon(state.weather.weatherConditionCode!),
+                          Center(
                             child: Text(
                               '${state.weather.temperature!.celsius!.round()}°C',
                               style: const TextStyle(
@@ -104,12 +125,14 @@ class HomePage extends StatelessWidget {
                                   fontWeight: FontWeight.w500),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Center(
                             child: Text(
-                              'Friday 16 09:41 am',
+                              DateFormat('EEEE dd .')
+                                  .add_jm()
+                                  .format(state.weather.date!),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -143,7 +166,9 @@ class HomePage extends StatelessWidget {
                                       ),
                                       SizedBox(height: 3),
                                       Text(
-                                        '5:34 am',
+                                        DateFormat()
+                                            .add_jm()
+                                            .format(state.weather.sunrise!),
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700),
@@ -173,7 +198,9 @@ class HomePage extends StatelessWidget {
                                       ),
                                       SizedBox(height: 3),
                                       Text(
-                                        '5:34 am',
+                                        DateFormat()
+                                            .add_jm()
+                                            .format(state.weather.sunset!),
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700),
@@ -212,7 +239,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       SizedBox(height: 3),
                                       Text(
-                                        '12°C',
+                                        "${state.weather.tempMax!.celsius!.round()}°C",
+                                        // '12°C',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700),
@@ -242,7 +270,7 @@ class HomePage extends StatelessWidget {
                                       ),
                                       SizedBox(height: 3),
                                       Text(
-                                        '8°C',
+                                        "${state.weather.tempMin!.celsius!.round()}°C",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700),
